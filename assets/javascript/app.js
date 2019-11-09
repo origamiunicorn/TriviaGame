@@ -48,6 +48,10 @@ $(document).ready(function () {
     // ... but only if there is no question displayed currently...
     // ... and only display one question at a time.
 
+    var questionNum = 0;
+
+    var correctAnswer;
+
     function populateQuestion(array) {
         var displayTrivia = $("#displayTrivia");
         var newDiv = $("<div>").addClass("triviaQuestions");
@@ -59,27 +63,35 @@ $(document).ready(function () {
         while (!question) {
             question = true;
             for (var i = 0; i < triviaQuestions.length; i++) {
-                newDiv.html($("<p>" + triviaQuestions[i].question + "</p>"));
-                newDiv.append($("<div>").addClass("questionDiv").val("a").text(triviaQuestions[i].answers.a));
-                newDiv.append($("<div>").addClass("questionDiv").val("b").text(triviaQuestions[i].answers.b));
-                newDiv.append($("<div>").addClass("questionDiv").val("c").text(triviaQuestions[i].answers.c));
-                newDiv.append($("<div>").addClass("questionDiv").val("d").text(triviaQuestions[i].answers.d));
-                wrongAnswerDiv.html($("<p>").text(triviaQuestions[i].text));
-                wrongAnswerDiv.append($("<img>").attr("src", triviaQuestions[i].gif));
-                rightAnswerDiv.html($("<img>").attr("src", triviaQuestions[i].gif));
-                displayTrivia.append(newDiv);
-                displayTrivia.append(rightAnswerDiv);
-                rightAnswerDiv.hide();
-                displayTrivia.append(wrongAnswerDiv);
-                wrongAnswerDiv.hide();
-                console.log("current question index number: " + i);
-                i++
-                console.log("next question index number: " + i);
-                console.log(question);
-                return;
+                if (questionNum < triviaQuestions.length) {
+                    correctAnswer = triviaQuestions[i + questionNum].correct;
+                    console.log("The current correct answer is: " + correctAnswer);
+                    newDiv.html($("<p>" + triviaQuestions[i + questionNum].question + "</p>"));
+                    newDiv.append($("<div>").addClass("questionDiv").val("a").text(triviaQuestions[i + questionNum].answers.a));
+                    newDiv.append($("<div>").addClass("questionDiv").val("b").text(triviaQuestions[i + questionNum].answers.b));
+                    newDiv.append($("<div>").addClass("questionDiv").val("c").text(triviaQuestions[i + questionNum].answers.c));
+                    newDiv.append($("<div>").addClass("questionDiv").text(triviaQuestions[i + questionNum].answers.d).val("d"));
+                    wrongAnswerDiv.html($("<p>").text(triviaQuestions[i + questionNum].text));
+                    wrongAnswerDiv.append($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
+                    rightAnswerDiv.html($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
+                    displayTrivia.append(newDiv);
+                    displayTrivia.append(rightAnswerDiv);
+                    rightAnswerDiv.hide();
+                    displayTrivia.append(wrongAnswerDiv);
+                    wrongAnswerDiv.hide();
+                    console.log("current question index number: " + i);
+                    i++
+                    console.log("next question index number: " + i);
+                    console.log(question);
+                    questionNum++;
+                    console.log("Current question number: " + questionNum);
+                    return;
+                } else {
+                    stop();
+                    displayTrivia.append($("<div>").text("You completed the quiz."));
+                }
             }
         }
-
     }
 
     // Create a timer that counts down from 30 seconds.
@@ -108,6 +120,7 @@ $(document).ready(function () {
 
         $(".questionDiv").click(function () {
             playerSelect = $(this).val();
+            console.log(playerSelect);
             determineWinLose(playerSelect); // Put the player's answer into the win/lose, see if they won/lost.
         })
     }
@@ -117,26 +130,24 @@ $(document).ready(function () {
     var timeOut = 0;
 
     function determineWinLose(choice) {
-        for (var i = 0; i < triviaQuestions.length; i++) {
-            if (choice === triviaQuestions[i].correct) {
-                $(".rightAnswerTrivia").show().prepend($("<h2>Correct!</h2>"));
-                $(".triviaQuestions").hide();
-                stop();
-                question = false;
-                win++;
-                console.log("# Wins:" + win);
-                getNextQuestion();
-                return false;
-            } else {
-                $(".wrongAnswerTrivia").show().prepend($("<h2>Not Quite!</h2>"));
-                $(".triviaQuestions").hide();
-                stop();
-                question = false;
-                lose++;
-                console.log("# Lose: " + lose);
-                // getNextQuestion();
-                return false;
-            }
+        if (choice === correctAnswer) {
+            $(".rightAnswerTrivia").show().prepend($("<h2>Correct!</h2>"));
+            $(".triviaQuestions").hide();
+            stop();
+            question = false;
+            win++;
+            console.log("# Wins:" + win);
+            getNextQuestion();
+            return false;
+        } else {
+            $(".wrongAnswerTrivia").show().prepend($("<h2>Not Quite!</h2>"));
+            $(".triviaQuestions").hide();
+            stop();
+            question = false;
+            lose++;
+            console.log("# Lose: " + lose);
+            getNextQuestion();
+            return false;
         }
     }
 
@@ -147,7 +158,7 @@ $(document).ready(function () {
         }
     }
 
-    function nextQuestion() {
+    function nextQuestion() { // Will need some way of checking that we have asked all questions to display the Final Results and allow for a reset of the game without page reload
         $("#displayTrivia").empty();
         number = 31;
         startTimer();
@@ -166,7 +177,7 @@ $(document).ready(function () {
             $(".triviaQuestions").hide();
             timeOut++;
             console.log("# Time Outs: " + timeOut);
-            // getNextQuestion();
+            getNextQuestion();
         }
     }
 
