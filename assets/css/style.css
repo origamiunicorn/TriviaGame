@@ -1,0 +1,34 @@
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+p {
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+.triviaQuestion {
+    width: 500px;
+}
+
+.questionDiv {
+    width: 500px;
+    border: 2px solid #ccc;
+    padding: 10px;
+    margin: 0;
+    text-align: center;
+}
+
+.questionDiv:hover {
+    background: yellow;
+}

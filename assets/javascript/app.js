@@ -52,7 +52,7 @@ $(document).ready(function () {
 
     var correctAnswer;
 
-    function populateQuestion(array) {
+    function populateQuestion() {
         var displayTrivia = $("#displayTrivia");
         var newDiv = $("<div>").addClass("triviaQuestions");
         var wrongAnswerDiv = $("<div>").addClass("wrongAnswerTrivia");
@@ -60,43 +60,56 @@ $(document).ready(function () {
 
         var question = false;
 
-        while (!question) {
-            question = true;
-            for (var i = 0; i < triviaQuestions.length; i++) {
-                if (questionNum < triviaQuestions.length) {
-                    correctAnswer = triviaQuestions[i + questionNum].correct;
-                    console.log("The current correct answer is: " + correctAnswer);
-                    newDiv.html($("<p>" + triviaQuestions[i + questionNum].question + "</p>"));
-                    newDiv.append($("<div>").addClass("questionDiv").val("a").text(triviaQuestions[i + questionNum].answers.a));
-                    newDiv.append($("<div>").addClass("questionDiv").val("b").text(triviaQuestions[i + questionNum].answers.b));
-                    newDiv.append($("<div>").addClass("questionDiv").val("c").text(triviaQuestions[i + questionNum].answers.c));
-                    newDiv.append($("<div>").addClass("questionDiv").text(triviaQuestions[i + questionNum].answers.d).val("d"));
-                    wrongAnswerDiv.html($("<p>").text(triviaQuestions[i + questionNum].text));
-                    wrongAnswerDiv.append($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
-                    rightAnswerDiv.html($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
-                    displayTrivia.append(newDiv);
-                    displayTrivia.append(rightAnswerDiv);
-                    rightAnswerDiv.hide();
-                    displayTrivia.append(wrongAnswerDiv);
-                    wrongAnswerDiv.hide();
-                    console.log("current question index number: " + i);
-                    i++
-                    console.log("next question index number: " + i);
-                    console.log(question);
-                    questionNum++;
-                    console.log("Current question number: " + questionNum);
-                    return;
-                } else {
-                    stop();
-                    displayTrivia.append($("<div>").text("You completed the quiz."));
-                }
-            }
-        }
+        // while (!question) {
+        //     console.log("Question number in while loop: " + questionNum);
+        //     question = true;
+
+        for (var i = 0; i < triviaQuestions.length; i++) {
+            (function (i) {
+                setTimeout(function () {
+                    console.log(triviaQuestions[i]);
+                }, 3000 * i);
+            })(i);
+        };
+
+        // for (var i = 0; i < triviaQuestions.length; i++) {
+        //     console.log("Question number in FOR loop: " + questionNum);
+        //     console.log(triviaQuestions[i]);
+        //     if (questionNum < triviaQuestions.length) {
+        //         correctAnswer = triviaQuestions[i + questionNum].correct;
+        //         console.log("The current correct answer is: " + correctAnswer);
+        //         newDiv.html($("<p>" + triviaQuestions[i + questionNum].question + "</p>"));
+        //         newDiv.append($("<div>").addClass("questionDiv").val("a").text(triviaQuestions[i + questionNum].answers.a));
+        //         newDiv.append($("<div>").addClass("questionDiv").val("b").text(triviaQuestions[i + questionNum].answers.b));
+        //         newDiv.append($("<div>").addClass("questionDiv").val("c").text(triviaQuestions[i + questionNum].answers.c));
+        //         newDiv.append($("<div>").addClass("questionDiv").text(triviaQuestions[i + questionNum].answers.d).val("d"));
+        //         wrongAnswerDiv.html($("<p>").text(triviaQuestions[i + questionNum].text));
+        //         wrongAnswerDiv.append($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
+        //         rightAnswerDiv.html($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
+        //         displayTrivia.append(newDiv);
+        //         displayTrivia.append(rightAnswerDiv);
+        //         rightAnswerDiv.hide();
+        //         displayTrivia.append(wrongAnswerDiv);
+        //         wrongAnswerDiv.hide();
+        //         console.log("current question index number: " + i);
+        //         i++
+        //         console.log("next question index number: " + i);
+        //         console.log(question);
+        //         questionNum++;
+        //         console.log("Current question number: " + questionNum);
+        //         return;
+        //     } else {
+        //         stop();
+        //         displayTrivia.append($("<div>").text("You completed the quiz."));
+        //     }
+        // }
+        //     questionNum++;
+        // }
     }
 
     // Create a timer that counts down from 30 seconds.
 
-    var number = 30;
+    var number = 5;
     var intervalId;
     var intervalIsRunning = false;
 
@@ -160,7 +173,7 @@ $(document).ready(function () {
 
     function nextQuestion() { // Will need some way of checking that we have asked all questions to display the Final Results and allow for a reset of the game without page reload
         $("#displayTrivia").empty();
-        number = 31;
+        number = 5;
         startTimer();
         clearInterval(intervalIdQuestions);
         intervalBetweenQuestions = false;
