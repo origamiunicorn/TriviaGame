@@ -125,7 +125,7 @@ $(document).ready(function () {
                 question = false;
                 win++;
                 console.log("# Wins:" + win);
-                // getNextQuestion();
+                getNextQuestion();
                 return false;
             } else {
                 $(".wrongAnswerTrivia").show().prepend($("<h2>Not Quite!</h2>"));
@@ -149,7 +149,6 @@ $(document).ready(function () {
 
     function nextQuestion() {
         $("#displayTrivia").empty();
-        populateQuestion();
         number = 31;
         startTimer();
         clearInterval(intervalIdQuestions);
