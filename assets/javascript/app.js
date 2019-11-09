@@ -64,12 +64,19 @@ $(document).ready(function () {
         //     console.log("Question number in while loop: " + questionNum);
         //     question = true;
 
-        for (var i = 0; i < triviaQuestions.length; i++) {
-            (function (i) {
-                setTimeout(function () {
-                    console.log(triviaQuestions[i]);
-                }, 3000 * i);
-            })(i);
+        for (let i = 0; i < triviaQuestions.length; i++) {
+            setTimeout(function () {
+                console.log(triviaQuestions[i]);
+                // Put question on DOM
+                newDiv.html($("<p>" + triviaQuestions[i].question + "</p>"));
+                displayTrivia.append(newDiv);
+
+                if (i === triviaQuestions.length - 1) {
+                    setTimeout(function () {
+                        console.log("Game over!")
+                    }, 3000)
+                }
+            }, 3000 * i);
         };
 
         // for (var i = 0; i < triviaQuestions.length; i++) {
@@ -103,8 +110,7 @@ $(document).ready(function () {
         //         displayTrivia.append($("<div>").text("You completed the quiz."));
         //     }
         // }
-        //     questionNum++;
-        // }
+        //    
     }
 
     // Create a timer that counts down from 30 seconds.
@@ -118,13 +124,10 @@ $(document).ready(function () {
 
     $("#timerDisplay").hide(); // Start with the timer hidden.
 
+    // $("#startTimer").on("click", populateQuestion); // Start timer and quiz on button click
     $("#startTimer").on("click", startTimer); // Start timer and quiz on button click
 
     function startTimer() {
-        if (!intervalIsRunning) {
-            intervalId = setInterval(decrement, 1000); // Count down a second at a time
-            intervalIsRunning = true;
-        }
 
         $("#startTimer").hide(); // Hide the timer.
         $("#displayTrivia").show(); // Show the trivia box.
