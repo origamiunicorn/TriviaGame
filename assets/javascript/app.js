@@ -1,5 +1,3 @@
-// Document ready!
-
 $(document).ready(function () {
 
     var triviaQuestions = [
@@ -43,31 +41,35 @@ $(document).ready(function () {
 
     $("#displayTrivia").hide();
 
-    var questionNum = 0;
-    let countDown = 3000;
+    let questionNum = 0;
+    let playerSelect;
+    let correct;
+    console.log("correct at start of everything: " + correct);
+    let countDown = 1000 * 5;
 
     function populateQuestion() {
-        var displayTrivia = $("#displayTrivia");
-        // var newDiv = $("<div>").addClass("triviaQuestions");
-        // var wrongAnswerDiv = $("<div>").addClass("wrongAnswerTrivia");
-        // var rightAnswerDiv = $("<div>").addClass("rightAnswerTrivia");
+        const displayTrivia = $("#displayTrivia");
 
         for (let i = 0; i < triviaQuestions.length; i++) {
             let myTime = i * countDown;
-            clearInterval(myVar);
             setTimeout(function () {
-                console.log(triviaQuestions[i]);
-
                 // Builds questions
-                const currentObject = triviaQuestions[questionNum];
+                const currentObject = triviaQuestions[i];
                 const question = currentObject.question;
                 const answers = currentObject.answers;
+                const gif = currentObject.gif;
+                const text = currentObject.text;
+                correct = currentObject.current;
+                console.log("correct in if loop of propogateQuestion: " + correct);
 
                 buildQuestion(question, answers, displayTrivia);
+                buildAnswers(gif, displayTrivia);
 
                 if (i === triviaQuestions.length - 1) {
+                    stopTimer();
+                    clearInterval(intervalId);
                     setTimeout(function () {
-                        // console.log("Game over!")
+                        console.log("Game over!")
                         gameOver(displayTrivia);
                     }, 3000)
                 }
@@ -79,7 +81,7 @@ $(document).ready(function () {
     function buildQuestion(qus, ans, targetDiv) {
         // Build my question and answers from my object array values
         targetDiv.empty();
-        var newDiv = $("<div>");
+        var newDiv = $("<div>").addClass("triviaQuestions");
         newDiv.html($("<p>" + qus + "</p>"));
         newDiv.append($("<div>").addClass("questionDiv").val("a").text(ans.a));
         newDiv.append($("<div>").addClass("questionDiv").val("b").text(ans.b));
@@ -89,26 +91,18 @@ $(document).ready(function () {
         $(".questionDiv").on("click", function () {
             playerSelect = $(this).val();
             console.log(playerSelect);
-            console.log(questionNum);
-        })
-        console.log(newDiv);
-    }
-
-    var seconds = 5;
-    var myVar = setInterval(function () {
-        myTimer();
-    }, 3000);
-
-    function resetTimer() {
-        seconds = 5;
-    }
-
-    function myTimer() {
-        $("#countdownTimer").html = seconds < 10 ? `00:0${seconds--}` : `00:${seconds--}`;
-        if (seconds === -1) {
+            console.log("val of questionNum in buildQuestion on click event function: " + questionNum);
+            stopTimer();
+            calculateScore(playerSelect);
             resetTimer();
-            populateQuestion();
-        }
+        })
+    }
+
+    function buildAnswers(gif, targetDiv) { // Just do one, in correct/incorrect can do the text
+        var answerDiv = $("<div>").addClass("answerTrivia");
+        answerDiv.html($("<img>").attr("src", gif));
+        targetDiv.append(answerDiv);
+        answerDiv.hide();
     }
 
     function gameOver(displayDiv) {
@@ -116,138 +110,57 @@ $(document).ready(function () {
         calculateScore();
     }
 
-    function calculateScore() {
+    function calculateScore(choice) {
         console.log("Calculating Score Later");
+        if (choice === correct) {
+            console.log("Answer is right!");
+        } else {
+            console.log("Answer is not right!")
+        }
     }
 
-    // Create a timer that counts down from n seconds.
+    $("#timerDisplay").hide();
 
-    // var number = 5;
-
-    // var intervalId;
-    // var intervalIsRunning = false;
-
-
-    // function run() {
-    //     if (!intervalIsRunning) {
-    //         intervalId = setInterval(decrement, 1000); // Set intervalID to an interval passing decfrement function, and 1000 ms
-    //         intervalIsRunning = true; // When the function is run, set intervalIsRunning to true.
-    //     }
-    // }
-
-    // function decrement() {
-    //     number--;
-    //     $("#countdownTimer").html(number);
-
-    //     if (number === 0) {
-    //         stop();
-    //         alert("Time Up!");
-    //     }
-    // }
-
-    // function stop() {
-
-    //     clearInterval(intervalId);
-    //     intervalIsRunning = false; // Now when this is stopped, you must set interval to false.
-    // }
-
-    $("#timerDisplay").hide(); // Start with the timer hidden.
-
-    // $("#startTimer").on("click", populateQuestion); // Start timer and quiz on button click
     $("#startTimer").on("click", startTimer); // Start timer and quiz on button click
 
     function startTimer() {
-
         $("#startTimer").hide(); // Hide the timer.
         $("#displayTrivia").show(); // Show the trivia box.
         $("#timerDisplay").show();
         populateQuestion(); // Populate a question.
-        // var playerSelect; // This is a variable for the player's answer!
-
-        // $(".questionDiv").click(function () {
-        //     playerSelect = $(this).val();
-        //     console.log(playerSelect);
-        //     determineWinLose(playerSelect); // Put the player's answer into the win/lose, see if they won/lost.
-        // })
+        runTimer();
     }
 
-    // var win = 0;
-    // var lose = 0;
-    // var timeOut = 0;
+    var number = 5;
+    // Run first interval, and call first interval off. Deals with question times.
+    var intervalId;
+    var intervalIsRunning = false;
 
-    // function determineWinLose(choice) {
-    //     if (choice === correctAnswer) {
-    //         $(".rightAnswerTrivia").show().prepend($("<h2>Correct!</h2>"));
-    //         $(".triviaQuestions").hide();
-    //         stop();
-    //         question = false;
-    //         win++;
-    //         console.log("# Wins:" + win);
-    //         getNextQuestion();
-    //         return false;
-    //     } else {
-    //         $(".wrongAnswerTrivia").show().prepend($("<h2>Not Quite!</h2>"));
-    //         $(".triviaQuestions").hide();
-    //         stop();
-    //         question = false;
-    //         lose++;
-    //         console.log("# Lose: " + lose);
-    //         getNextQuestion();
-    //         return false;
-    //     }
-    // }
+    function resetTimer() {
+        number = 5;
+        runTimer();
+    }
 
-    // function getNextQuestion() {
-    //     if (!intervalBetweenQuestions) {
-    //         intervalIdQuestions = setInterval(nextQuestion, 5000); // Run function after 5 seconds
-    //         intervalBetweenQuestions = true;
-    //     }
-    // }
+    function runTimer() {
+        if (!intervalIsRunning) {
+            intervalId = setInterval(decrement, 1000);
+            intervalIsRunning = true; // When the function is run, set intervalIsRunning to true.
+        }
+    }
 
-    // function nextQuestion() { // Will need some way of checking that we have asked all questions to display the Final Results and allow for a reset of the game without page reload
-    //     $("#displayTrivia").empty();
-    //     number = 5;
-    //     startTimer();
-    //     clearInterval(intervalIdQuestions);
-    //     intervalBetweenQuestions = false;
-    // }
+    function decrement() { // Count down from number to zero
+        number--;
+        $("#countdownTimer").html(number);
+        if (number === 0) {
+            stopTimer();
+            question = false;
+            console.log("Time Up!");
+            // getNextQuestion();
+        }
+    }
 
-    // function decrement() {
-    //     $("#timerDisplay").show();
-    //     number--;
-    //     $("#countdownTimer").html(number);
-    //     if (number === 0) {
-    //         stop();
-    //         question = false;
-    //         $(".wrongAnswerTrivia").show().prepend($("<h2>Out of Time!</h2>"));
-    //         $(".triviaQuestions").hide();
-    //         timeOut++;
-    //         console.log("# Time Outs: " + timeOut);
-    //         getNextQuestion();
-    //     }
-    // }
-
-    // function stop() {
-
-    //     clearInterval(intervalId);
-    //     intervalIsRunning = false;
-    // }
+    function stopTimer() { // Stop the timer running, clear the interval.
+        clearInterval(intervalId);
+        intervalIsRunning = false;
+    }
 });
-
-
-
-        //         wrongAnswerDiv.html($("<p>").text(triviaQuestions[i + questionNum].text));
-        //         wrongAnswerDiv.append($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
-        //         rightAnswerDiv.html($("<img>").attr("src", triviaQuestions[i + questionNum].gif));
-        //         displayTrivia.append(newDiv);
-        //         displayTrivia.append(rightAnswerDiv);
-        //         rightAnswerDiv.hide();
-        //         displayTrivia.append(wrongAnswerDiv);
-        //         wrongAnswerDiv.hide();
-
-        //     } else {
-        //         stop();
-        //         displayTrivia.append($("<div>").text("You completed the quiz."));
-        //     }
-        // }
-        // 
