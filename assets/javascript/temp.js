@@ -102,17 +102,13 @@ $(document).ready(function () {
         var question = false;
 
         while (!question) {
-            console.log("Question number in while loop: " + questionNum);
             question = true;
 
             for (var i = 0; i < triviaQuestions.length; i++) {
-                console.log("Question number in FOR loop: " + questionNum);
-                console.log(triviaQuestions[i]);
                 if (questionNum < triviaQuestions.length) {
                     var triviaQ = triviaQuestions[i + questionNum];
                     correctAnswer = triviaQ.correct;
                     rightText = triviaQ.text;
-                    console.log("The current correct answer is: " + correctAnswer);
                     newDiv.html($("<p>" + triviaQ.question + "</p>"));
                     newDiv.append($("<div>").addClass("questionDiv").val("a").text(triviaQ.answers.a));
                     newDiv.append($("<div>").addClass("questionDiv").val("b").text(triviaQ.answers.b));
@@ -175,7 +171,6 @@ $(document).ready(function () {
 
         $(".questionDiv").click(function () {
             playerSelect = $(this).val();
-            console.log(playerSelect);
             determineWinLose(playerSelect); // Put the player's answer into the win/lose, see if they won/lost.
         })
     }
