@@ -22,7 +22,7 @@ $(document).ready(function () {
                 d: "Earth",
             },
             correct: "b",
-            gif: "assets/images/venus.gif",
+            gif: "assets/images/planets.gif",
             text: "The correct answer is Venus, which completes one rotation every 243 Earth days."
         },
         {
